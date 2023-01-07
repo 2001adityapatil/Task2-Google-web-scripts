@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<style type="text/css">
+
+body {
+    background-color: #FFFFFF;
+}
+</style>
+<BR>
+<BR>
+<BR>
+<div align="center">
+  <table width="459" border="0">
+
+    <tbody>
+      <tr>
+        <td width="462"><div align="center">
+          <hr>
+        </div>
+          <form id="myForm" align="center">
+            <div id="data"></div>
+            <input type="text" id="myName" name="myName" placeholder="Your name...">
+            <input type="email" id="myEmail" name="myEmail" placeholder="Your email...">
+            <input id="uploadfile" type="file" name="myFile">
+            <input type="submit" value="Upload File" 
+           onclick="this.value='Uploading..';
+           getFiles();
+            return false;">
+          </form>
+          <div id="output"></div>
+
+          <script>
+
+    function getFiles() {
+     const name = document.getElementById('myName').value;
+     const email = document.getElementById('myEmail').value;
+     const f = document.getElementById('uploadfile');
+     [...f.files].forEach((file, i) => {
+      const fr = new FileReader();
+      fr.onload = (e) => {
+       const data = e.target.result.split(",");
+       const obj = {fileName: f.files[i].name, mimeType: data[0].match(/:(\w.+);/)[1], data: data[1],myName: name,myEmail: email};
+       google.script.run.withSuccessHandler(fileUploaded)
+       .uploadFiles(obj);
+      }
+     fr.readAsDataURL(file);
+    });
+    }
+
+     function fileUploaded(status) {
+        document.getElementById('myForm').style.display = 'none';
+        document.getElementById('output').innerHTML = status;
+    }
+    </script>
+
+        <style>
+ input { display:block; margin: 20px; }
+
+          </style>
+        <hr></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>&nbsp;</h3>
+  <p>&nbsp;</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Upload Files</title>
+  </head>
+  <body>
+   <form>
+  <input type="file" name="file" onchange="upload(this.parentNode)" accept=".pdf,application/pdf" />
+</form>
+<script>
+function upload(e){
+  const file = e.file.files[0];
+  const fr = new FileReader();
+  fr.onload = e => google.script.run.upload([[...new Int8Array(e.target.result)], file.type, file.name]);
+  fr.readAsArrayBuffer(file);
+}
+</script>
+  </body>
+</html> -->
